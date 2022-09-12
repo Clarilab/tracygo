@@ -2,7 +2,6 @@ package tracygo
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
@@ -33,8 +32,6 @@ func (t *TracyGo) WriteHeader(ctx *atreugo.RequestCtx) error {
 
 	ctx.Response.Header.Set(t.correlationId, correlationId)
 	ctx.Response.Header.Set(t.requestId, requestId)
-
-	fmt.Println(ctx.Response.Header.String())
 
 	return ctx.Next()
 }
