@@ -10,26 +10,29 @@ import (
 )
 
 func main() {
+	tracy := tracygo.New()
 
-	//router := atreugo.New(atreugo.Config{
-	//	Addr: "0.0.0.0:8080",
-	//})
+	router := atreugo.New(atreugo.Config{
+		Addr: "0.0.0.0:8080",
+	})
 
-	// router.UseBefore(tracygo.CheckRequestID)
-	// router.UseAfter(tracygo.WriteHeader)
-	// router.GET("/hello-world", SomeFunction)
-	// router.ListenAndServe()
+	router.UseBefore(tracy.CheckRequestID)
+	router.UseAfter(tracy.WriteHeader)
+	router.GET("/hello-world", SomeFunction)
+	go router.ListenAndServe()
 
 	client := resty.New()
-	client.OnBeforeRequest(tracygo.CheckRequestIDResty)
+	client.OnBeforeRequest(tracy.CheckTracingIDs)
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, "X-Correlation-ID", "Zitronenbaum")
+	ctx = context.WithValue(ctx, "X-Request-ID", "Dies das")
 	_, err := client.R().
-		SetContext(context.WithValue(context.Background(), "X-Correlation-ID", "Zitronenbaum")).
+		SetContext(ctx).
 		EnableTrace().
 		Get("http://localhost:8080/hello-world")
 	if err != nil {
-		fmt.Printf("error")
+		fmt.Println(err.Error())
 	}
-
 }
 
 func SomeFunction(ctx *atreugo.RequestCtx) error {
