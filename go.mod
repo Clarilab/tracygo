@@ -1,4 +1,4 @@
-module dev.azure.com/kycnow/kycnow/_git/tracygo
+module github.com/Clarilab/tracygo
 
 go 1.18
 

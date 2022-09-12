@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"dev.azure.com/kycnow/kycnow/_git/tracygo"
+	"github.com/Clarilab/tracygo"
 	"github.com/go-resty/resty/v2"
 	"github.com/savsgio/atreugo/v11"
 )
@@ -33,6 +33,8 @@ func main() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+
+	select {}
 }
 
 func SomeFunction(ctx *atreugo.RequestCtx) error {
