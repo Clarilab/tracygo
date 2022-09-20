@@ -4,7 +4,7 @@
 
 > import "github.com/Clarilab/tracygo"
 
-##How to use
+## How to use
 
 Check the main.go in the example folder.
 There are two middleware functions for atreugo.
