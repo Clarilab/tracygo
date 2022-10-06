@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/go-resty/resty/v2 v2.7.0
+	github.com/looplab/eventhorizon v0.15.5
 	github.com/savsgio/atreugo/v11 v11.9.5
 )
 

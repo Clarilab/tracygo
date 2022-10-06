@@ -3,9 +3,13 @@ package tracygo
 import (
 	"errors"
 
+	"context"
+
 	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
 	"github.com/savsgio/atreugo/v11"
+
+	clarilab "github.com/Clarilab/eventhorizon"
 )
 
 // CheckRequestID is a useBefore middleware that checks if a correlationID is set if that is not the case it creates a new one
@@ -90,4 +94,48 @@ func New(options ...Option) *TracyGo {
 	}
 
 	return tracy
+}
+
+// DefaultNamespace is the namespace to use if not set in the context.
+const DefaultNamespace = "default"
+
+// Strings used to marshal context values.
+const (
+	namespaceKeyStr = "clairlab_namespace"
+)
+
+func init() {
+	clarilab.RegisterContextMarshaler(func(ctx context.Context, vals map[string]interface{}) {
+		if ns, ok := ctx.Value(namespaceKey).(string); ok {
+			vals[namespaceKeyStr] = ns
+		}
+	})
+	clarilab.RegisterContextUnmarshaler(func(ctx context.Context, vals map[string]interface{}) context.Context {
+		if ns, ok := vals[namespaceKeyStr].(string); ok {
+			ctx = NewContext(ctx, ns)
+		}
+
+		return ctx
+	})
+}
+
+type contextKey int
+
+const (
+	namespaceKey contextKey = iota
+)
+
+// FromContext returns the namespace from the context, or the default namespace.
+func FromContext(ctx context.Context) string {
+	if ns, ok := ctx.Value(namespaceKey).(string); ok {
+		return ns
+	}
+
+	return DefaultNamespace
+}
+
+// NewContext sets the namespace to use in the context. The namespace is used to
+// determine which database to use, among other things.
+func NewContext(ctx context.Context, namespace string) context.Context {
+	return context.WithValue(ctx, namespaceKey, namespace)
 }
