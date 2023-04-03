@@ -36,9 +36,8 @@ func main() {
 	}
 	ctx.Init(&fasthttp.Request{}, nil, nil)
 	ctx.SetUserValue("X-Correlation-ID", "Zitronenbaum")
-	ctx.SetUserValue("X-Request-ID", "1234567890")
 
-	resp, err := client.R().
+	_, err := client.R().
 		SetContext(ctx).
 		EnableTrace().
 		Get("http://localhost:8080/hello-world")
@@ -46,21 +45,18 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	fmt.Printf("RestyResponseHelloWorld: X-Correlation-ID = %s\n", resp.Header().Get("X-Correlation-ID")) // Zitronenbaum
-	fmt.Printf("RestyResponseHelloWorld: X-Request-ID = %s\n", resp.Header().Get("X-Request-ID"))         // 1234567890
-
 	select {}
 }
 
 func SomeFunction(ctx *atreugo.RequestCtx) error {
 	fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", string(ctx.Request.Header.Peek("X-Correlation-ID"))) // Zitronenbaum
-	fmt.Printf("HelloWorld: X-Request-ID = %s\n", string(ctx.Request.Header.Peek("X-Request-ID")))         // 1234567890
+	fmt.Printf("HelloWorld: X-Request-ID = %s\n", string(ctx.Request.Header.Peek("X-Request-ID")))         // generated
 
 	tracy := tracygo.New()
 	client := resty.New()
 	client.OnBeforeRequest(tracy.RestyCheckTracingIDs)
 
-	resp, err := client.R().
+	_, err := client.R().
 		SetContext(ctx).
 		EnableTrace().
 		Get("http://localhost:8081/hello-world-2")
@@ -68,10 +64,7 @@ func SomeFunction(ctx *atreugo.RequestCtx) error {
 		fmt.Println(err.Error())
 	}
 
-	fmt.Printf("RestyResponseHelloWorld2: X-Correlation-ID = %s\n", resp.Header().Get("X-Correlation-ID")) // Zitronenbaum
-	fmt.Printf("RestyResponseHelloWorld2: X-Request-ID = %s\n", resp.Header().Get("X-Request-ID"))         // generated
-
-	return nil
+	return ctx.JSONResponse(nil, 500)
 }
 
 func SomeFunction2(ctx *atreugo.RequestCtx) error {

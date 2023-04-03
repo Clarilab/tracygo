@@ -15,16 +15,11 @@ func (t *TracyGo) AtreugoCheckTracingIDs(ctx *atreugo.RequestCtx) error {
 	if correlationID == "" {
 		correlationID = uuid.New().String()
 	}
+
+	// set userValue for resty middleware
 	ctx.SetUserValue(t.correlationID, correlationID)
+
 	ctx.Response.Header.Set(t.correlationID, correlationID)
-
-	if requestID == "" {
-		requestID = uuid.New().String()
-	}
-
-	// generate a new requestID for resty to use for the next request
-	// we use it like this, so resty can always have the same requestID even when it's retrying a request
-	ctx.SetUserValue(t.requestID, uuid.New().String())
 	ctx.Response.Header.Set(t.requestID, requestID)
 
 	return ctx.Next()
@@ -44,10 +39,7 @@ func (t *TracyGo) RestyCheckTracingIDs(client *resty.Client, request *resty.Requ
 		request.Header.Set(t.correlationID, correlationID)
 	}
 
-	requestID, _ := requestCtx.UserValue(t.requestID).(string)
-	if requestID != "" {
-		request.Header.Set(t.requestID, requestID)
-	}
+	request.Header.Set(t.requestID, uuid.New().String())
 
 	return nil
 }
