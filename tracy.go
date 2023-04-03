@@ -1,88 +1,85 @@
 package tracygo
 
 import (
-	"errors"
-
 	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
 	"github.com/savsgio/atreugo/v11"
 )
 
-// CheckRequestID is a useBefore middleware that checks if a correlationID is set if that is not the case it creates a new one
-// and creates a new requestID which both get written into the userValues
-func (t *TracyGo) CheckRequestID(ctx *atreugo.RequestCtx) error {
-	correlationId := string(ctx.Request.Header.Peek(t.correlationId))
+// AtreugoCheckTracingIDs is a useBefore middleware for atreugo that checks if a correlationID and requestID have been set
+// and creates a new one if they have not been set yet.
+func (t *TracyGo) AtreugoCheckTracingIDs(ctx *atreugo.RequestCtx) error {
+	correlationID := string(ctx.Request.Header.Peek(t.correlationID))
+	requestID := string(ctx.Request.Header.Peek(t.requestID))
 
-	if correlationId == "" {
-		correlationId = uuid.New().String()
+	if correlationID == "" {
+		correlationID = uuid.New().String()
+	}
+	ctx.SetUserValue(t.correlationID, correlationID)
+	ctx.Response.Header.Set(t.correlationID, correlationID)
+
+	if requestID == "" {
+		requestID = uuid.New().String()
 	}
 
-	requestId := uuid.New().String()
-
-	ctx.SetUserValue(t.correlationId, correlationId)
-	ctx.SetUserValue(t.requestId, requestId)
-
-	return ctx.Next()
-}
-
-// WriteHeader is a useAfter middle which takes the correlationId and requestId and writes then into the response Header.
-func (t *TracyGo) WriteHeader(ctx *atreugo.RequestCtx) error {
-	correlationId := ctx.UserValue(t.correlationId).(string)
-	requestId := ctx.UserValue(t.requestId).(string)
-
-	ctx.Response.Header.Set(t.correlationId, correlationId)
-	ctx.Response.Header.Set(t.requestId, requestId)
+	// generate a new requestID for resty to use for the next request
+	// we use it like this, so resty can always have the same requestID even when it's retrying a request
+	ctx.SetUserValue(t.requestID, uuid.New().String())
+	ctx.Response.Header.Set(t.requestID, requestID)
 
 	return ctx.Next()
 }
 
-// CheckTracingIDs is a OnBeforeRequest middleware which check if the context has the tracing ids set.
+// RestyCheckTracingIDs is a OnBeforeRequest middleware for resty which check if the context has the tracing ids set.
 // If they are set, they should be put into the request headers
-func (t *TracyGo) CheckTracingIDs(client *resty.Client, request *resty.Request) error {
-	correlationId, ok := request.Context().Value(t.correlationId).(string)
+func (t *TracyGo) RestyCheckTracingIDs(client *resty.Client, request *resty.Request) error {
+	requestCtx, ok := request.Context().(*atreugo.RequestCtx)
 	if !ok {
-		return errors.New("correlationId not found")
+		return nil
 	}
 
-	requestId, ok := request.Context().Value(t.requestId).(string)
-	if !ok {
-		return errors.New("requestId not found")
+	// if the correlationID or requestID are present in the atreugo userValues, put them in the resty request
+	correlationID, _ := requestCtx.UserValue(t.correlationID).(string)
+	if correlationID != "" {
+		request.Header.Set(t.correlationID, correlationID)
 	}
 
-	request.Header.Set(t.correlationId, correlationId)
-	request.Header.Set(t.requestId, requestId)
+	requestID, _ := requestCtx.UserValue(t.requestID).(string)
+	if requestID != "" {
+		request.Header.Set(t.requestID, requestID)
+	}
 
 	return nil
 }
 
 // TracyGo is a struct for the tracy object.
 type TracyGo struct {
-	correlationId string
-	requestId     string
+	correlationID string
+	requestID     string
 }
 
 // Option is an optional func.
 type Option func(tracy *TracyGo)
 
-// CorrelationId returns a function that sets the correlationId of the header.
-func CorrelationId(id string) Option {
+// CorrelationID returns a function that sets the key for the correlationId header.
+func CorrelationID(id string) Option {
 	return func(tracy *TracyGo) {
-		tracy.correlationId = id
+		tracy.correlationID = id
 	}
 }
 
-// RequestId returns a function that sets the requestId of the header.
-func RequestId(id string) Option {
+// RequestID returns a function that sets the key for the requestId header.
+func RequestID(id string) Option {
 	return func(tracy *TracyGo) {
-		tracy.requestId = id
+		tracy.requestID = id
 	}
 }
 
-// New creates a new Tracygo object and uses the options on it.
+// New creates a new TracyGo object and uses the options on it.
 func New(options ...Option) *TracyGo {
 	tracy := &TracyGo{
-		correlationId: "X-Correlation-ID",
-		requestId:     "X-Request-ID",
+		correlationID: "X-Correlation-ID",
+		requestID:     "X-Request-ID",
 	}
 
 	for _, option := range options {

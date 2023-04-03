@@ -1,12 +1,12 @@
 package main
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/Clarilab/tracygo"
 	"github.com/go-resty/resty/v2"
 	"github.com/savsgio/atreugo/v11"
+	"github.com/valyala/fasthttp"
 )
 
 func main() {
@@ -16,23 +16,30 @@ func main() {
 		Addr: "0.0.0.0:8080",
 	})
 
-	router.UseBefore(tracy.CheckRequestID)
-	router.UseAfter(tracy.WriteHeader)
+	router.UseBefore(tracy.AtreugoCheckTracingIDs)
 	router.GET("/hello-world", SomeFunction)
 	go router.ListenAndServe()
 
 	client := resty.New()
-	client.OnBeforeRequest(tracy.CheckTracingIDs)
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, "X-Correlation-ID", "Zitronenbaum")
-	ctx = context.WithValue(ctx, "X-Request-ID", "Dies das")
-	_, err := client.R().
+	client.OnBeforeRequest(tracy.RestyCheckTracingIDs)
+
+	ctx := &atreugo.RequestCtx{
+		RequestCtx: &fasthttp.RequestCtx{},
+	}
+	ctx.Init(&fasthttp.Request{}, nil, nil)
+	ctx.SetUserValue("X-Correlation-ID", "Zitronenbaum")
+	ctx.SetUserValue("X-Request-ID", "1234567890")
+
+	resp, err := client.R().
 		SetContext(ctx).
 		EnableTrace().
 		Get("http://localhost:8080/hello-world")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+
+	fmt.Println(resp.Header().Get("X-Correlation-ID"))
+	fmt.Println(resp.Header().Get("X-Request-ID"))
 
 	select {}
 }
