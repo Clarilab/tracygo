@@ -20,6 +20,14 @@ func main() {
 	router.GET("/hello-world", SomeFunction)
 	go router.ListenAndServe()
 
+	router2 := atreugo.New(atreugo.Config{
+		Addr: "0.0.0.0:8081",
+	})
+
+	router2.UseBefore(tracy.AtreugoCheckTracingIDs)
+	router2.GET("/hello-world-2", SomeFunction2)
+	go router2.ListenAndServe()
+
 	client := resty.New()
 	client.OnBeforeRequest(tracy.RestyCheckTracingIDs)
 
@@ -38,13 +46,37 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	fmt.Println(resp.Header().Get("X-Correlation-ID"))
-	fmt.Println(resp.Header().Get("X-Request-ID"))
+	fmt.Printf("RestyResponseHelloWorld: X-Correlation-ID = %s\n", resp.Header().Get("X-Correlation-ID")) // Zitronenbaum
+	fmt.Printf("RestyResponseHelloWorld: X-Request-ID = %s\n", resp.Header().Get("X-Request-ID"))         // 1234567890
 
 	select {}
 }
 
 func SomeFunction(ctx *atreugo.RequestCtx) error {
-	fmt.Println("Hello world")
+	fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", string(ctx.Request.Header.Peek("X-Correlation-ID"))) // Zitronenbaum
+	fmt.Printf("HelloWorld: X-Request-ID = %s\n", string(ctx.Request.Header.Peek("X-Request-ID")))         // 1234567890
+
+	tracy := tracygo.New()
+	client := resty.New()
+	client.OnBeforeRequest(tracy.RestyCheckTracingIDs)
+
+	resp, err := client.R().
+		SetContext(ctx).
+		EnableTrace().
+		Get("http://localhost:8081/hello-world-2")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	fmt.Printf("RestyResponseHelloWorld2: X-Correlation-ID = %s\n", resp.Header().Get("X-Correlation-ID")) // Zitronenbaum
+	fmt.Printf("RestyResponseHelloWorld2: X-Request-ID = %s\n", resp.Header().Get("X-Request-ID"))         // generated
+
+	return nil
+}
+
+func SomeFunction2(ctx *atreugo.RequestCtx) error {
+	fmt.Printf("HelloWorld2: X-Correlation-ID = %s\n", string(ctx.Request.Header.Peek("X-Correlation-ID"))) // Zitronenbaum
+	fmt.Printf("HelloWorld2: X-Request-ID = %s\n", string(ctx.Request.Header.Peek("X-Request-ID")))         // generated
+
 	return nil
 }
