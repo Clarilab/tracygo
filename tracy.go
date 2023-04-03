@@ -16,6 +16,10 @@ func (t *TracyGo) AtreugoCheckTracingIDs(ctx *atreugo.RequestCtx) error {
 		correlationID = uuid.New().String()
 	}
 
+	if requestID == "" {
+		requestID = uuid.New().String()
+	}
+
 	// set userValue for resty middleware
 	ctx.SetUserValue(t.correlationID, correlationID)
 
