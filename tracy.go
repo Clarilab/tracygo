@@ -30,16 +30,10 @@ func (t *TracyGo) AtreugoCheckTracingIDs(ctx *atreugo.RequestCtx) error {
 }
 
 // RestyCheckTracingIDs is a OnBeforeRequest middleware for resty which check if the context has the tracing ids set.
-// If they are set, they should be put into the request headers
+// If they are set, they should be put into the request headers.
 func (t *TracyGo) RestyCheckTracingIDs(client *resty.Client, request *resty.Request) error {
-	requestCtx, ok := request.Context().(*atreugo.RequestCtx)
-	if !ok {
-		return nil
-	}
-
-	// if the correlationID or requestID are present in the atreugo userValues, put them in the resty request
-	correlationID, _ := requestCtx.UserValue(t.correlationID).(string)
-	if correlationID != "" {
+	correlationID, ok := request.Context().Value(t.correlationID).(string)
+	if ok && correlationID != "" {
 		request.Header.Set(t.correlationID, correlationID)
 	}
 
