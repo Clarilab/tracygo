@@ -7,7 +7,7 @@ require (
 	github.com/savsgio/atreugo/v11 v11.9.5
 )
 
-require golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
+require golang.org/x/net v0.7.0 // indirect
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
@@ -18,5 +18,5 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.38.0
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
+	golang.org/x/sys v0.5.0 // indirect
 )
