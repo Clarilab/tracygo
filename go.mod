@@ -3,11 +3,11 @@ module github.com/Clarilab/tracygo
 go 1.18
 
 require (
-	github.com/go-resty/resty/v2 v2.7.0
+	github.com/go-resty/resty/v2 v2.9.1
 	github.com/savsgio/atreugo/v11 v11.9.5
 )
 
-require golang.org/x/net v0.7.0 // indirect
+require golang.org/x/net v0.15.0 // indirect
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
@@ -18,5 +18,5 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.38.0
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
 )
