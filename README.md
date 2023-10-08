@@ -1,15 +1,30 @@
-# tracygo
+# TracyGo
+
+## INFO
+
+TracyGo provides functionality for tracing a correlation identifier through multiple go microservices.
+
+The library includes middlewares for the following frameworks:
+- [Atreugo](https://github.com/savsgio/atreugo)
+- [Fiber](https://github.com/gofiber/fiber)
+- [Resty](https://github.com/go-resty/resty)
+
+### Supported Go Versions
+
+This library supports the most recent Go, currently  **1.21**.
+
+## How to install
+
+```bash
+go get github.com/Clarilab/tracygo/v2
+```
 
 ## How to import
-
-> import "github.com/Clarilab/tracygo"
+```go
+import "github.com/Clarilab/tracygo/v2"
+```
 
 ## How to use
-
-Check the main.go in the example folder.
-There are two middleware functions for atreugo.
-UseBefore(CheckRequestID) which checks if the IDs are set if not its creates and saves them in the Uservalues.
-UseAfter(WriteHeader) which writes the the userValues  into the response Header.
-
-There is one resty middleware.
-OnBeforeRequest(CheckTracingIDs) which checks if the IDs are set and writes them into the Header.
+In the examples folder you will find some example applications.
+One using the atreugo middleware, one using the fiber middleware.
+Both examples also demonstrate how to use the resty middleware.
