@@ -1,79 +1,27 @@
+// The TracyGo package provides functionality for tracing
+// a correlation identifier through multiple go microservices.
 package tracygo
 
 import (
-	"github.com/go-resty/resty/v2"
-	"github.com/google/uuid"
-	"github.com/savsgio/atreugo/v11"
+	"context"
 )
 
-// AtreugoCheckTracingIDs is a useBefore middleware for atreugo that checks if a correlationID and requestID have been set
-// and creates a new one if they have not been set yet.
-func (t *TracyGo) AtreugoCheckTracingIDs(ctx *atreugo.RequestCtx) error {
-	correlationID := string(ctx.Request.Header.Peek(t.correlationID))
-	requestID := string(ctx.Request.Header.Peek(t.requestID))
-
-	if correlationID == "" {
-		correlationID = uuid.New().String()
-	}
-
-	if requestID == "" {
-		requestID = uuid.New().String()
-	}
-
-	// set userValue for resty middleware
-	ctx.SetUserValue(t.correlationID, correlationID)
-
-	ctx.Response.Header.Set(t.correlationID, correlationID)
-	ctx.Response.Header.Set(t.requestID, requestID)
-
-	return ctx.Next()
-}
-
-// RestyCheckTracingIDs is a OnBeforeRequest middleware for resty which check if the context has the tracing ids set.
-// If they are set, they should be put into the request headers.
-func (t *TracyGo) RestyCheckTracingIDs(client *resty.Client, request *resty.Request) error {
-	request.Header.Set(t.requestID, uuid.New().String())
-
-	correlationID, ok := request.Context().Value(t.correlationID).(string)
-	if ok && correlationID != "" {
-		request.Header.Set(t.correlationID, correlationID)
-
-		return nil
-	}
-
-	request.Header.Set(t.correlationID, uuid.New().String())
-
-	return nil
-}
+const (
+	correlationID = "X-Correlation-ID"
+	requestID     = "X-Request-ID"
+)
 
 // TracyGo is a struct for the tracy object.
 type TracyGo struct {
-	correlationID string
-	requestID     string
-}
-
-// Option is an optional func.
-type Option func(tracy *TracyGo)
-
-// CorrelationID returns a function that sets the key for the correlationId header.
-func CorrelationID(id string) Option {
-	return func(tracy *TracyGo) {
-		tracy.correlationID = id
-	}
-}
-
-// RequestID returns a function that sets the key for the requestId header.
-func RequestID(id string) Option {
-	return func(tracy *TracyGo) {
-		tracy.requestID = id
-	}
+	correlationID CorrelationID
+	requestID     RequestID
 }
 
 // New creates a new TracyGo object and uses the options on it.
 func New(options ...Option) *TracyGo {
 	tracy := &TracyGo{
-		correlationID: "X-Correlation-ID",
-		requestID:     "X-Request-ID",
+		correlationID: correlationID,
+		requestID:     requestID,
 	}
 
 	for _, option := range options {
@@ -81,4 +29,34 @@ func New(options ...Option) *TracyGo {
 	}
 
 	return tracy
+}
+
+// Get retrieves the underlying correlationID key.
+func (t *TracyGo) GetCorrelationID() CorrelationID {
+	return t.correlationID
+}
+
+// GetRequestID retrieves the underlying requestID key.
+func (t *TracyGo) GetRequestID() RequestID {
+	return t.requestID
+}
+
+// FromContext returns the correlationID from the given context, or the an empty string.
+func (t *TracyGo) FromContext(ctx context.Context) string {
+	if ctx != nil {
+		if correlationID, ok := ctx.Value(t.correlationID).(string); ok {
+			return correlationID
+		}
+	}
+
+	return ""
+}
+
+// NewContext sets the correlationID to use in the given context. If ctx is nil, a new context is created.
+func (t *TracyGo) NewContext(ctx context.Context, correlationID string) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	return context.WithValue(ctx, t.correlationID, correlationID)
 }
