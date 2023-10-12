@@ -1,3 +1,11 @@
+github.com/Clarilab/tracygo/middleware/atreugo/v2 v2.0.0 h1:FqklJhhQNI/Pg0GhzigGIbBBMTpJGVLLF4ehnebbkqs=
+github.com/Clarilab/tracygo/middleware/atreugo/v2 v2.0.0/go.mod h1:RqpVH/zn2sy3dWYc657udvpJlTd+bCQ17UleSPsDRvE=
+github.com/Clarilab/tracygo/middleware/fiber/v2 v2.0.0 h1:c2DXs33NMhieE4jTJ+CboFvP7zKuVeuv0fmE1AfM0kA=
+github.com/Clarilab/tracygo/middleware/fiber/v2 v2.0.0/go.mod h1:THJwTeaMaXKVsae+nyYFpfL7Q3OVyZD/v6qnSXQ4+OU=
+github.com/Clarilab/tracygo/middleware/resty/v2 v2.0.0 h1:NPvKmp/ItKE5VGhyPqs3qMtmfrrf6rztjihE54dF/18=
+github.com/Clarilab/tracygo/middleware/resty/v2 v2.0.0/go.mod h1:O1a4EujqnMJpj7x6iX6SmJdbbJjnIHOYLR80dhmd1qg=
+github.com/Clarilab/tracygo/v2 v2.0.0 h1:TC6/4mfQxg4WNvyU5TW7UWIcGQS2JlMEGXh8g2xmQn4=
+github.com/Clarilab/tracygo/v2 v2.0.0/go.mod h1:DTUarfWtuAsbaLsXnzlQDS5nkTzXcna7ZvLIqriw5Vk=
 github.com/andybalholm/brotli v1.0.4/go.mod h1:fO7iG3H7G2nSZ7m0zPUDn85XEX2GTukHGRSepvi9Eig=
 github.com/andybalholm/brotli v1.0.5 h1:8uQZIdzKmjc/iuPu7O2ioW48L81FgatrcpfFmiq/cCs=
 github.com/andybalholm/brotli v1.0.5/go.mod h1:fO7iG3H7G2nSZ7m0zPUDn85XEX2GTukHGRSepvi9Eig=
@@ -53,8 +61,8 @@ golang.org/x/net v0.0.0-20220906165146-f3363e06e74c/go.mod h1:YDH+HFinaLZZlnHAfS
 golang.org/x/net v0.6.0/go.mod h1:2Tu9+aMcznHK/AK1HMvgo6xiTLG5rD5rZLDS+rp2Bjs=
 golang.org/x/net v0.10.0/go.mod h1:0qNGK6F8kojg2nk9dLZ2mShWaEBan6FAoqfSigmmuDg=
 golang.org/x/net v0.15.0/go.mod h1:idbUs1IY1+zTqbi8yxTbhexhEEk5ur9LInksu6HrEpk=
-golang.org/x/net v0.16.0 h1:7eBu7KsSvFDtSXUIDbh3aqlK4DPsZ1rByC8PFfBThos=
-golang.org/x/net v0.16.0/go.mod h1:NxSsAGuq816PNPmqtQdLE42eU2Fs7NoRIZrHJAlaCOE=
+golang.org/x/net v0.17.0 h1:pVaXccu2ozPjCXewfr1S7xza/zcXTity9cCdXQYSjIM=
+golang.org/x/net v0.17.0/go.mod h1:NxSsAGuq816PNPmqtQdLE42eU2Fs7NoRIZrHJAlaCOE=
 golang.org/x/sync v0.0.0-20190423024810-112230192c58/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
 golang.org/x/sync v0.1.0/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
