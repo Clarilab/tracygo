@@ -3,7 +3,8 @@ module github.com/Clarilab/tracygo/middleware/fiber/v2
 go 1.18
 
 require (
-	github.com/gofiber/fiber/v2 v2.49.2
+	github.com/Clarilab/tracygo/v2 v2.0.0
+	github.com/gofiber/fiber/v2 v2.50.0
 	github.com/google/uuid v1.3.1
 )
 
