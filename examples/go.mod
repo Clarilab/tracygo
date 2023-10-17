@@ -8,7 +8,7 @@ require (
 	github.com/Clarilab/tracygo/middleware/resty/v2 v2.0.0
 	github.com/Clarilab/tracygo/v2 v2.0.0
 	github.com/go-resty/resty/v2 v2.9.1
-	github.com/gofiber/fiber/v2 v2.49.2
+	github.com/gofiber/fiber/v2 v2.50.0
 	github.com/savsgio/atreugo/v11 v11.9.9
 	github.com/valyala/fasthttp v1.50.0
 )

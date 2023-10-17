@@ -16,8 +16,8 @@ github.com/fasthttp/router v1.4.20 h1:yPeNxz5WxZGojzolKqiP15DTXnxZce9Drv577GBrDg
 github.com/fasthttp/router v1.4.20/go.mod h1:um867yNQKtERxBm+C+yzgWxjspTiQoA8z86Ec3fK/tc=
 github.com/go-resty/resty/v2 v2.9.1 h1:PIgGx4VrHvag0juCJ4dDv3MiFRlDmP0vicBucwf+gLM=
 github.com/go-resty/resty/v2 v2.9.1/go.mod h1:4/GYJVjh9nhkhGR6AUNW3XhpDYNUr+Uvy9gV/VGZIy4=
-github.com/gofiber/fiber/v2 v2.49.2 h1:ONEN3/Vc+dUCxxDgZZwpqvhISgHqb+bu+isBiEyKEQs=
-github.com/gofiber/fiber/v2 v2.49.2/go.mod h1:gNsKnyrmfEWFpJxQAV0qvW6l70K1dZGno12oLtukcts=
+github.com/gofiber/fiber/v2 v2.50.0 h1:ia0JaB+uw3GpNSCR5nvC5dsaxXjRU5OEu36aytx+zGw=
+github.com/gofiber/fiber/v2 v2.50.0/go.mod h1:21eytvay9Is7S6z+OgPi7c7n4++tnClWmhpimVHMimw=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/google/uuid v1.3.1 h1:KjJaJ9iWZ3jOFZIf1Lqf4laDRCasjl0BCmnEGxkdLb4=
 github.com/google/uuid v1.3.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
