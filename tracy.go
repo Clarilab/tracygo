@@ -13,8 +13,8 @@ const (
 
 // TracyGo is a struct for the tracy object.
 type TracyGo struct {
-	correlationID CorrelationID
-	requestID     RequestID
+	correlationID string
+	requestID     string
 }
 
 // New creates a new TracyGo object and uses the options on it.
@@ -31,18 +31,18 @@ func New(options ...Option) *TracyGo {
 	return tracy
 }
 
-// Get retrieves the underlying correlationID key.
-func (t *TracyGo) GetCorrelationID() CorrelationID {
+// CorrelationIDKey returns the underlying correlationID key.
+func (t *TracyGo) CorrelationIDKey() string {
 	return t.correlationID
 }
 
-// GetRequestID retrieves the underlying requestID key.
-func (t *TracyGo) GetRequestID() RequestID {
+// RequestIDKey returns the underlying requestID key.
+func (t *TracyGo) RequestIDKey() string {
 	return t.requestID
 }
 
 // FromContext returns the correlationID from the given context, or the an empty string.
-func (t *TracyGo) FromContext(ctx context.Context) string {
+func (t *TracyGo) CorrelationIDromContext(ctx context.Context) string {
 	if ctx != nil {
 		if correlationID, ok := ctx.Value(t.correlationID).(string); ok {
 			return correlationID
@@ -52,11 +52,31 @@ func (t *TracyGo) FromContext(ctx context.Context) string {
 	return ""
 }
 
-// NewContext sets the correlationID to use in the given context. If ctx is nil, a new context is created.
-func (t *TracyGo) NewContext(ctx context.Context, correlationID string) context.Context {
+// FromContext returns the correlationID from the given context, or the an empty string.
+func (t *TracyGo) RequestIDFromContext(ctx context.Context) string {
+	if ctx != nil {
+		if requestID, ok := ctx.Value(t.requestID).(string); ok {
+			return requestID
+		}
+	}
+
+	return ""
+}
+
+// NewContextWithCorrelationID sets the correlationID to use in the given context. If ctx is nil, a new context without value is created.
+func (t *TracyGo) NewContextWithCorrelationID(ctx context.Context, correlationID string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
 	}
 
-	return context.WithValue(ctx, t.correlationID, correlationID)
+	return context.WithValue(ctx, t.correlationID, correlationID) //nolint:staticcheck // intended use
+}
+
+// NewContextWithRequestID sets the requestID to use in the given context. If ctx is nil, a new context without value is created.
+func (t *TracyGo) NewContextWithRequestID(ctx context.Context, requestID string) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	return context.WithValue(ctx, t.requestID, requestID) //nolint:staticcheck // intended use
 }

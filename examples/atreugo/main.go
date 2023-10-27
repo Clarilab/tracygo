@@ -18,15 +18,20 @@ func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
 
-	tracer := tracygo.New()
+	tracer := tracygo.New(tracygo.WithCorrelationID("my-correlation-id-key"), tracygo.WithRequestID("my-request-id-key"))
+
+	apiRestyClient := resty.New()
+	apiRestyClient.OnBeforeRequest(restyTracyGo.RestyCheckTracingIDs(tracer))
+
+	api := NewAPI(tracer, apiRestyClient)
 
 	router := atreugo.New(atreugo.Config{
 		Addr:   "0.0.0.0:8080",
 		Logger: &Logger{},
 	})
 
-	router.UseBefore(atreugoTracyGo.AtreugoCheckTracingIDs(tracer))
-	router.GET("/hello-world", AtreugoHandler(wg))
+	router.UseBefore(atreugoTracyGo.CheckTracingIDs(tracer))
+	router.GET("/hello-world", api.AtreugoHandler(wg))
 	go func() { log.Fatal(router.ListenAndServe()) }()
 
 	router2 := atreugo.New(atreugo.Config{
@@ -34,8 +39,8 @@ func main() {
 		Logger: &Logger{},
 	})
 
-	router2.UseBefore(atreugoTracyGo.AtreugoCheckTracingIDs(tracer))
-	router2.GET("/hello-world-2", AtreugoHandler2(wg))
+	router2.UseBefore(atreugoTracyGo.CheckTracingIDs(tracer))
+	router2.GET("/hello-world-2", api.AtreugoHandler2(wg))
 	go func() { log.Fatal(router2.ListenAndServe()) }()
 
 	client := resty.New()
@@ -45,7 +50,7 @@ func main() {
 		RequestCtx: &fasthttp.RequestCtx{},
 	}
 	ctx.Init(&fasthttp.Request{}, nil, nil)
-	ctx.SetUserValue(tracygo.CorrelationID("X-Correlation-ID"), "Zitronenbaum")
+	ctx.SetUserValue(tracer.CorrelationIDKey(), "Zitronenbaum")
 
 	_, err := client.R().
 		SetContext(ctx).
@@ -58,17 +63,27 @@ func main() {
 	wg.Wait()
 }
 
-func AtreugoHandler(wg *sync.WaitGroup) func(ctx *atreugo.RequestCtx) error {
+// API is the api type.
+type API struct {
+	tracer      *tracygo.TracyGo
+	restyClient *resty.Client
+}
+
+// NewAPI creates a new API.
+func NewAPI(tracer *tracygo.TracyGo, restyClient *resty.Client) *API {
+	return &API{
+		tracer:      tracer,
+		restyClient: restyClient,
+	}
+}
+
+func (a *API) AtreugoHandler(wg *sync.WaitGroup) func(ctx *atreugo.RequestCtx) error {
 	return func(ctx *atreugo.RequestCtx) error {
 
-		fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", string(ctx.Request.Header.Peek("X-Correlation-ID"))) // Zitronenbaum
-		fmt.Printf("HelloWorld: X-Request-ID = %s\n", string(ctx.Request.Header.Peek("X-Request-ID")))         // generated
+		fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", a.tracer.CorrelationIDromContext(ctx)) // Zitronenbaum
+		fmt.Printf("HelloWorld: X-Request-ID = %s\n", a.tracer.RequestIDFromContext(ctx))        // generated
 
-		tracy := tracygo.New()
-		client := resty.New()
-		client.OnBeforeRequest(restyTracyGo.RestyCheckTracingIDs(tracy))
-
-		_, err := client.R().
+		_, err := a.restyClient.R().
 			SetContext(ctx).
 			EnableTrace().
 			Get("http://localhost:8081/hello-world-2")
@@ -82,10 +97,10 @@ func AtreugoHandler(wg *sync.WaitGroup) func(ctx *atreugo.RequestCtx) error {
 	}
 }
 
-func AtreugoHandler2(wg *sync.WaitGroup) func(ctx *atreugo.RequestCtx) error {
+func (a *API) AtreugoHandler2(wg *sync.WaitGroup) func(ctx *atreugo.RequestCtx) error {
 	return func(ctx *atreugo.RequestCtx) error {
-		fmt.Printf("HelloWorld2: X-Correlation-ID = %s\n", string(ctx.Request.Header.Peek("X-Correlation-ID"))) // Zitronenbaum
-		fmt.Printf("HelloWorld2: X-Request-ID = %s\n", string(ctx.Request.Header.Peek("X-Request-ID")))         // generated
+		fmt.Printf("HelloWorld2: X-Correlation-ID = %s\n", a.tracer.CorrelationIDromContext(ctx)) // Zitronenbaum
+		fmt.Printf("HelloWorld2: X-Request-ID = %s\n", a.tracer.RequestIDFromContext(ctx))        // new generated
 
 		wg.Done()
 
