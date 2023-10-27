@@ -6,13 +6,13 @@ import (
 	"github.com/google/uuid"
 )
 
-// AtreugoCheckTracingIDs is a useBefore middleware for atreugo that checks if a correlationID and requestID have been set
+// CheckTracingIDs is a middleware for fiber that checks if a correlationID and requestID have been set
 // and creates a new one if they have not been set yet.
-func AtreugoCheckTracingIDs(t *tracygo.TracyGo) func(ctx *fiber.Ctx) error {
+func CheckTracingIDs(t *tracygo.TracyGo) func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 
-		correlationID := string(ctx.Request().Header.Peek(t.GetCorrelationID().String()))
-		requestID := string(ctx.Request().Header.Peek(t.GetRequestID().String()))
+		correlationID := string(ctx.Request().Header.Peek(t.CorrelationIDKey()))
+		requestID := string(ctx.Request().Header.Peek(t.RequestIDKey()))
 
 		if correlationID == "" {
 			correlationID = uuid.NewString()
@@ -22,11 +22,12 @@ func AtreugoCheckTracingIDs(t *tracygo.TracyGo) func(ctx *fiber.Ctx) error {
 			requestID = uuid.NewString()
 		}
 
-		// set userValue for resty middleware
-		ctx.Context().SetUserValue(t.GetCorrelationID(), correlationID)
+		// set userValues for resty middleware
+		ctx.Context().SetUserValue(t.CorrelationIDKey(), correlationID)
+		ctx.Context().SetUserValue(t.RequestIDKey(), requestID)
 
-		ctx.Response().Header.Set(t.GetCorrelationID().String(), correlationID)
-		ctx.Response().Header.Set(t.GetRequestID().String(), requestID)
+		ctx.Response().Header.Set(t.CorrelationIDKey(), correlationID)
+		ctx.Response().Header.Set(t.RequestIDKey(), requestID)
 
 		return ctx.Next()
 	}

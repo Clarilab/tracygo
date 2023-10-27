@@ -19,19 +19,24 @@ func main() {
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
 
-	tracer := tracygo.New()
+	tracer := tracygo.New(tracygo.WithCorrelationID("my-correlation-id-key"), tracygo.WithRequestID("my-request-id-key"))
+
+	apiRestyClient := resty.New()
+	apiRestyClient.OnBeforeRequest(restyTracyGo.RestyCheckTracingIDs(tracer))
+
+	api := NewAPI(tracer, apiRestyClient)
 
 	router := fiber.New(fiber.Config{DisableStartupMessage: true})
 
-	router.Use(fiberTracyGo.AtreugoCheckTracingIDs(tracer))
-	router.Get("/hello-world", FiberHandler(wg))
+	router.Use(fiberTracyGo.CheckTracingIDs(tracer))
+	router.Get("/hello-world", api.FiberHandler(wg))
 
 	go func() { log.Fatal(router.Listen(":8080")) }()
 
 	router2 := fiber.New(fiber.Config{DisableStartupMessage: true})
 
-	router2.Use(fiberTracyGo.AtreugoCheckTracingIDs(tracer))
-	router2.Get("/hello-world-2", FiberHandler2(wg))
+	router2.Use(fiberTracyGo.CheckTracingIDs(tracer))
+	router2.Get("/hello-world-2", api.FiberHandler2(wg))
 
 	go func() { log.Fatal(router2.Listen(":8081")) }()
 
@@ -43,7 +48,7 @@ func main() {
 	}
 
 	ctx.Init(&fasthttp.Request{}, nil, nil)
-	ctx.SetUserValue(tracygo.CorrelationID("X-Correlation-ID"), "Zitronenbaum")
+	ctx.SetUserValue(tracer.CorrelationIDKey(), "Zitronenbaum")
 
 	_, err := client.R().
 		SetContext(ctx).
@@ -56,16 +61,26 @@ func main() {
 	wg.Wait()
 }
 
-func FiberHandler(wg *sync.WaitGroup) func(ctx *fiber.Ctx) error {
+// API is the api type.
+type API struct {
+	tracer      *tracygo.TracyGo
+	restyClient *resty.Client
+}
+
+// NewAPI creates a new API.
+func NewAPI(tracer *tracygo.TracyGo, restyClient *resty.Client) *API {
+	return &API{
+		tracer:      tracer,
+		restyClient: restyClient,
+	}
+}
+
+func (a *API) FiberHandler(wg *sync.WaitGroup) func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
-		fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", string(ctx.Request().Header.Peek("X-Correlation-ID"))) // Zitronenbaum
-		fmt.Printf("HelloWorld: X-Request-ID = %s\n", string(ctx.Request().Header.Peek("X-Request-ID")))         // generated
+		fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", a.tracer.CorrelationIDromContext(ctx.Context())) // Zitronenbaum
+		fmt.Printf("HelloWorld: X-Request-ID = %s\n", a.tracer.RequestIDFromContext(ctx.Context()))        // generated
 
-		tracy := tracygo.New()
-		client := resty.New()
-		client.OnBeforeRequest(restyTracyGo.RestyCheckTracingIDs(tracy))
-
-		_, err := client.R().
+		_, err := a.restyClient.R().
 			SetContext(ctx.Context()).
 			EnableTrace().
 			Get("http://localhost:8081/hello-world-2")
@@ -79,10 +94,10 @@ func FiberHandler(wg *sync.WaitGroup) func(ctx *fiber.Ctx) error {
 	}
 }
 
-func FiberHandler2(wg *sync.WaitGroup) func(ctx *fiber.Ctx) error {
+func (a *API) FiberHandler2(wg *sync.WaitGroup) func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
-		fmt.Printf("HelloWorld2: X-Correlation-ID = %s\n", string(ctx.Request().Header.Peek("X-Correlation-ID"))) // Zitronenbaum
-		fmt.Printf("HelloWorld2: X-Request-ID = %s\n", string(ctx.Request().Header.Peek("X-Request-ID")))         // generated
+		fmt.Printf("HelloWorld2: X-Correlation-ID = %s\n", a.tracer.CorrelationIDromContext(ctx.Context())) // Zitronenbaum
+		fmt.Printf("HelloWorld2: X-Request-ID = %s\n", a.tracer.RequestIDFromContext(ctx.Context()))        // new generated
 
 		wg.Done()
 
