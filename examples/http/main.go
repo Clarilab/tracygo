@@ -1,13 +1,17 @@
 package main
 
 import (
+	"context"
 	"net/http"
 
 	httptracygo "github.com/Clarilab/tracygo/middleware/http/v2"
 	restytracygo "github.com/Clarilab/tracygo/middleware/resty/v2"
-
 	"github.com/Clarilab/tracygo/v2"
 	"github.com/go-resty/resty/v2"
+)
+
+const (
+	correlationValue = "Zitronenbaum"
 )
 
 func main() {
@@ -15,23 +19,18 @@ func main() {
 
 	// setup separate server for main server to call
 	setupSeparateServer()
+
+	// setup main server
 	setupMainServer(tracer)
 
-	// request to main server
-	request, err := http.NewRequest("GET", "http://localhost:8080", nil)
+	resp, err := callMainServer(context.Background(), tracer.CorrelationIDKey())
 	if err != nil {
 		panic(err)
 	}
 
-	request.Header.Add(tracer.CorrelationIDKey(), "Zitronenbaum")
+	defer resp.Body.Close()
 
-	// call main server
-	resp, err := new(http.Client).Do(request)
-	if err != nil {
-		panic(err)
-	}
-
-	if resp.Header.Get(tracer.CorrelationIDKey()) != "Zitronenbaum" {
+	if resp.Header.Get(tracer.CorrelationIDKey()) != correlationValue {
 		panic("X-Correlation-ID header is not set in response")
 	}
 
@@ -40,19 +39,32 @@ func main() {
 	}
 }
 
+func callMainServer(ctx context.Context, correlationID string) (*http.Response, error) {
+	// request to main server
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://localhost:8080", nil)
+	if err != nil {
+		panic(err)
+	}
+
+	request.Header.Add(correlationID, correlationValue)
+
+	// call main server
+	return new(http.Client).Do(request) //nolint:wrapcheck
+}
+
 func setupMainServer(tracer *tracygo.TracyGo) {
 	mux := http.NewServeMux()
 
 	restyClient := resty.New()
 	restyClient.OnBeforeRequest(restytracygo.RestyCheckTracingIDs(tracer))
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get(tracer.CorrelationIDKey()) != "Zitronenbaum" {
+	mux.HandleFunc("/", func(_ http.ResponseWriter, r *http.Request) {
+		if r.Header.Get(tracer.CorrelationIDKey()) != correlationValue {
 			panic("X-Correlation-ID header is not set in context")
 		}
 
 		correlationID, ok := r.Context().Value(tracer.CorrelationIDKey()).(string)
-		if !ok || correlationID != "Zitronenbaum" {
+		if !ok || correlationID != correlationValue {
 			panic("correlation id is not set in context")
 		}
 
@@ -73,7 +85,7 @@ func setupMainServer(tracer *tracygo.TracyGo) {
 
 	server := httptracygo.CheckTracingIDs(tracer)(mux)
 
-	go func() { _ = http.ListenAndServe(":8080", server) }()
+	go func() { panic(http.ListenAndServe(":8080", server)) }()
 }
 
 func setupSeparateServer() {
@@ -85,7 +97,7 @@ func setupSeparateServer() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Header.Get(headerCorrelationID) != "Zitronenbaum" {
+		if r.Header.Get(headerCorrelationID) != correlationValue {
 			panic("X-Correlation-ID header is not set")
 		}
 
@@ -96,5 +108,5 @@ func setupSeparateServer() {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	go func() { _ = http.ListenAndServe(":8081", mux) }()
+	go func() { panic(http.ListenAndServe(":8081", mux)) }()
 }

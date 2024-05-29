@@ -13,7 +13,6 @@ import (
 func CheckTracingIDs(t *tracygo.TracyGo) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
-
 			correlationID := r.Header.Get(t.CorrelationIDKey())
 			requestID := r.Header.Get(t.RequestIDKey())
 
