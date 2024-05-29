@@ -5,9 +5,9 @@ import (
 	"log"
 	"sync"
 
-	fibertracygo "github.com/Clarilab/tracygo/middleware/fiber/v2"
-	restytracygo "github.com/Clarilab/tracygo/middleware/resty/v2"
 	"github.com/Clarilab/tracygo/v2"
+	fibertracygo "github.com/Clarilab/tracygo/v2/middleware/fiber"
+	restytracygo "github.com/Clarilab/tracygo/v2/middleware/resty"
 	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/savsgio/atreugo/v11"

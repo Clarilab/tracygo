@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"sync"
 
-	atreugotracygo "github.com/Clarilab/tracygo/middleware/atreugo/v2"
-	restytracygo "github.com/Clarilab/tracygo/middleware/resty/v2"
 	"github.com/Clarilab/tracygo/v2"
+	atreugotracygo "github.com/Clarilab/tracygo/v2/middleware/atreugo"
+	restytracygo "github.com/Clarilab/tracygo/v2/middleware/resty"
 	"github.com/go-resty/resty/v2"
 	"github.com/savsgio/atreugo/v11"
 	"github.com/valyala/fasthttp"

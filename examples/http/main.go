@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	httptracygo "github.com/Clarilab/tracygo/middleware/http/v2"
-	restytracygo "github.com/Clarilab/tracygo/middleware/resty/v2"
 	"github.com/Clarilab/tracygo/v2"
+	httptracygo "github.com/Clarilab/tracygo/v2/middleware/http"
+	restytracygo "github.com/Clarilab/tracygo/v2/middleware/resty"
 	"github.com/go-resty/resty/v2"
 )
 
