@@ -56,7 +56,7 @@ func setupMainServer(tracer *tracygo.TracyGo) {
 	mux := http.NewServeMux()
 
 	restyClient := resty.New()
-	restyClient.OnBeforeRequest(restytracygo.RestyCheckTracingIDs(tracer))
+	restyClient.OnBeforeRequest(restytracygo.CheckTracingIDs(tracer))
 
 	mux.HandleFunc("/", func(_ http.ResponseWriter, r *http.Request) {
 		if r.Header.Get(tracer.CorrelationIDKey()) != correlationValue {

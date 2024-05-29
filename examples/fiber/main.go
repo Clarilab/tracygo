@@ -25,7 +25,7 @@ func main() {
 	tracer := tracygo.New(tracygo.WithCorrelationID("my-correlation-id-key"), tracygo.WithRequestID("my-request-id-key"))
 
 	apiRestyClient := resty.New()
-	apiRestyClient.OnBeforeRequest(restytracygo.RestyCheckTracingIDs(tracer))
+	apiRestyClient.OnBeforeRequest(restytracygo.CheckTracingIDs(tracer))
 
 	api := NewAPI(tracer, apiRestyClient)
 
@@ -44,7 +44,7 @@ func main() {
 	go func() { log.Fatal(router2.Listen(":8081")) }()
 
 	client := resty.New()
-	client.OnBeforeRequest(restytracygo.RestyCheckTracingIDs(tracer))
+	client.OnBeforeRequest(restytracygo.CheckTracingIDs(tracer))
 
 	ctx := &atreugo.RequestCtx{
 		RequestCtx: &fasthttp.RequestCtx{},
