@@ -1,0 +1,17 @@
+name: Examples CI
+
+on:
+  push:
+    branches: ["main"]
+    paths: ["examples/**"]
+  pull_request:
+    branches: ["main"]
+    paths: ["examples/**"]
+  workflow_dispatch:
+
+jobs:
+  ci-examples:
+    name: Examples
+    uses: Clarilab/workflows/.github/workflows/go-backend.yaml@main
+    with:
+      work_dir: examples/
