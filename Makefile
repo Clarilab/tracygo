@@ -9,3 +9,6 @@ atreugo:
 
 fiber:
 	go run ./examples/fiber
+
+http:
+	go run ./examples/http
