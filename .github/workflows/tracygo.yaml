@@ -3,10 +3,8 @@ name: TracyGo CI
 on:
   push:
     branches: ["main"]
-    paths: ["*.go", "*.mod", "*.sum","*.work","*.work.sum"]
   pull_request:
     branches: ["main"]
-    paths: ["*.go", "*.mod", "*.sum","*.work","*.work.sum"]
   workflow_dispatch:
 
 jobs:
