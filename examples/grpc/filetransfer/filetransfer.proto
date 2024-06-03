@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package filetransfer;
+
+option go_package = "./filetransfer";
+
+// The service definition
+service FileService {
+    // RPC to upload a file
+    rpc UploadFile(UploadFileRequest) returns (UploadFileResponse);
+}
+
+// The request message containing the file bytes
+message UploadFileRequest {
+    string file_name = 1;  // Name of the file being uploaded
+    bytes file_content = 2;  // Contents of the file as bytes
+}
+
+// The response message confirming the upload
+message UploadFileResponse {
+    bool success = 1;  // Indicates if the upload was successful
+    string message = 2;  // Additional message (e.g., error message)
+}
