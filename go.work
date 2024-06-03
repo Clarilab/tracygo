@@ -1,9 +1,0 @@
-go 1.18
-
-use (
-	.
-	./examples
-	./middleware/atreugo
-	./middleware/fiber
-	./middleware/resty
-)

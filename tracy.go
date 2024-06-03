@@ -31,17 +31,17 @@ func New(options ...Option) *TracyGo {
 	return tracy
 }
 
-// CorrelationIDKey returns the underlying correlationID key.
+// CorrelationIDKey returns the underlying correlation id key.
 func (t *TracyGo) CorrelationIDKey() string {
 	return t.correlationID
 }
 
-// RequestIDKey returns the underlying requestID key.
+// RequestIDKey returns the underlying request id key.
 func (t *TracyGo) RequestIDKey() string {
 	return t.requestID
 }
 
-// FromContext returns the correlationID from the given context, or the an empty string.
+// FromContext returns the correlation id from the given context, or the an empty string.
 func (t *TracyGo) CorrelationIDromContext(ctx context.Context) string {
 	if ctx != nil {
 		if correlationID, ok := ctx.Value(t.correlationID).(string); ok {
@@ -63,20 +63,20 @@ func (t *TracyGo) RequestIDFromContext(ctx context.Context) string {
 	return ""
 }
 
-// NewContextWithCorrelationID sets the correlationID to use in the given context. If ctx is nil, a new context without value is created.
+// NewContextWithCorrelationID sets the correlation id to use in the given context. If ctx is nil, a new context without value is created.
 func (t *TracyGo) NewContextWithCorrelationID(ctx context.Context, correlationID string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
 	}
 
-	return context.WithValue(ctx, t.correlationID, correlationID) //nolint:staticcheck // intended use
+	return context.WithValue(ctx, t.correlationID, correlationID) //nolint:staticcheck,revive // intended use
 }
 
-// NewContextWithRequestID sets the requestID to use in the given context. If ctx is nil, a new context without value is created.
+// NewContextWithRequestID sets the request id to use in the given context. If ctx is nil, a new context without value is created.
 func (t *TracyGo) NewContextWithRequestID(ctx context.Context, requestID string) context.Context {
 	if ctx == nil {
 		ctx = context.Background()
 	}
 
-	return context.WithValue(ctx, t.requestID, requestID) //nolint:staticcheck // intended use
+	return context.WithValue(ctx, t.requestID, requestID) //nolint:staticcheck,revive // intended use
 }

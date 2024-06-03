@@ -71,7 +71,7 @@ func Test_FromContext(t *testing.T) {
 	t.Run("correlationID exists", func(t *testing.T) {
 		t.Parallel()
 
-		ctx := context.WithValue(context.Background(), keyCorrelationID, "Zitronenbaum") //nolint:staticcheck // intended use for testing
+		ctx := context.WithValue(context.Background(), keyCorrelationID, "Zitronenbaum") //nolint:staticcheck,revive // intended use for testing
 
 		id := tracer.CorrelationIDromContext(ctx)
 
@@ -93,7 +93,7 @@ func Test_FromContext(t *testing.T) {
 	t.Run("requestID exists", func(t *testing.T) {
 		t.Parallel()
 
-		ctx := context.WithValue(context.Background(), keyRequestID, "Zitronenbaum") //nolint:staticcheck // intended use for testing
+		ctx := context.WithValue(context.Background(), keyRequestID, "Zitronenbaum") //nolint:staticcheck,revive // intended use for testing
 
 		id := tracer.RequestIDFromContext(ctx)
 

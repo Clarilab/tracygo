@@ -1,0 +1,15 @@
+name: TracyGo CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  ci-tracy-go:
+    name: TracyGo
+    uses: Clarilab/workflows/.github/workflows/go-backend.yaml@main
+    with:
+      work_dir: .

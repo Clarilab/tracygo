@@ -10,7 +10,6 @@ import (
 // and creates a new one if they have not been set yet.
 func CheckTracingIDs(t *tracygo.TracyGo) func(ctx *atreugo.RequestCtx) error {
 	return func(ctx *atreugo.RequestCtx) error {
-
 		correlationID := string(ctx.Request.Header.Peek(t.CorrelationIDKey()))
 		requestID := string(ctx.Request.Header.Peek(t.RequestIDKey()))
 
