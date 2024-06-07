@@ -73,7 +73,7 @@ func Test_FromContext(t *testing.T) {
 
 		ctx := context.WithValue(context.Background(), keyCorrelationID, "Zitronenbaum") //nolint:staticcheck,revive // intended use for testing
 
-		id := tracer.CorrelationIDromContext(ctx)
+		id := tracer.CorrelationIDFromContext(ctx)
 
 		if id != "Zitronenbaum" {
 			t.Errorf("expected 'Zitronenbaum', got '%s'", id)
@@ -83,7 +83,7 @@ func Test_FromContext(t *testing.T) {
 	t.Run("correlationID does not exist", func(t *testing.T) {
 		t.Parallel()
 
-		id := tracer.CorrelationIDromContext(context.Background())
+		id := tracer.CorrelationIDFromContext(context.Background())
 
 		if id != "" {
 			t.Errorf("expected '', got '%s'", id)
@@ -115,7 +115,7 @@ func Test_FromContext(t *testing.T) {
 	t.Run("nil context", func(t *testing.T) {
 		t.Parallel()
 
-		id := tracer.CorrelationIDromContext(nil) //nolint:staticcheck // intended use for testing
+		id := tracer.CorrelationIDFromContext(nil) //nolint:staticcheck // intended use for testing
 
 		if id != "" {
 			t.Errorf("expected '', got '%s'", id)
