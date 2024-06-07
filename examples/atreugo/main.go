@@ -84,7 +84,7 @@ func NewAPI(tracer *tracygo.TracyGo, restyClient *resty.Client) *API {
 func (a *API) AtreugoHandler(wg *sync.WaitGroup) func(ctx *atreugo.RequestCtx) error {
 	return func(ctx *atreugo.RequestCtx) error {
 		//nolint:forbidigo // intended use
-		fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", a.tracer.CorrelationIDromContext(ctx)) // Zitronenbaum
+		fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", a.tracer.CorrelationIDFromContext(ctx)) // Zitronenbaum
 		//nolint:forbidigo // intended use
 		fmt.Printf("HelloWorld: X-Request-ID = %s\n", a.tracer.RequestIDFromContext(ctx)) // generated
 
@@ -105,7 +105,7 @@ func (a *API) AtreugoHandler(wg *sync.WaitGroup) func(ctx *atreugo.RequestCtx) e
 func (a *API) AtreugoHandler2(wg *sync.WaitGroup) func(ctx *atreugo.RequestCtx) error {
 	return func(ctx *atreugo.RequestCtx) error {
 		//nolint:forbidigo // intended use
-		fmt.Printf("HelloWorld2: X-Correlation-ID = %s\n", a.tracer.CorrelationIDromContext(ctx)) // Zitronenbaum
+		fmt.Printf("HelloWorld2: X-Correlation-ID = %s\n", a.tracer.CorrelationIDFromContext(ctx)) // Zitronenbaum
 		//nolint:forbidigo // intended use
 		fmt.Printf("HelloWorld2: X-Request-ID = %s\n", a.tracer.RequestIDFromContext(ctx)) // new generated
 

@@ -4,6 +4,8 @@ package tracygo
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
 const (
@@ -41,8 +43,8 @@ func (t *TracyGo) RequestIDKey() string {
 	return t.requestID
 }
 
-// FromContext returns the correlation id from the given context, or the an empty string.
-func (t *TracyGo) CorrelationIDromContext(ctx context.Context) string {
+// CorrelationIDFromContext returns the correlation id from the given context, or an empty string.
+func (t *TracyGo) CorrelationIDFromContext(ctx context.Context) string {
 	if ctx != nil {
 		if correlationID, ok := ctx.Value(t.correlationID).(string); ok {
 			return correlationID
@@ -52,7 +54,20 @@ func (t *TracyGo) CorrelationIDromContext(ctx context.Context) string {
 	return ""
 }
 
-// FromContext returns the correlationID from the given context, or the an empty string.
+// EnsureCorrelationID makes sure the given context has a correlation id set.
+func (t *TracyGo) EnsureCorrelationID(ctx context.Context) context.Context {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	if _, ok := ctx.Value(t.correlationID).(string); ok {
+		return ctx
+	}
+
+	return t.NewContextWithCorrelationID(ctx, uuid.NewString())
+}
+
+// RequestIDFromContext returns the requestID from the given context, or an empty string.
 func (t *TracyGo) RequestIDFromContext(ctx context.Context) string {
 	if ctx != nil {
 		if requestID, ok := ctx.Value(t.requestID).(string); ok {

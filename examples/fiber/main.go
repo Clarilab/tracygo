@@ -81,7 +81,7 @@ func NewAPI(tracer *tracygo.TracyGo, restyClient *resty.Client) *API {
 func (a *API) FiberHandler(wg *sync.WaitGroup) func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 		//nolint:forbidigo // intended use
-		fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", a.tracer.CorrelationIDromContext(ctx.Context())) // Zitronenbaum
+		fmt.Printf("HelloWorld: X-Correlation-ID = %s\n", a.tracer.CorrelationIDFromContext(ctx.Context())) // Zitronenbaum
 		//nolint:forbidigo // intended use
 		fmt.Printf("HelloWorld: X-Request-ID = %s\n", a.tracer.RequestIDFromContext(ctx.Context())) // generated
 
@@ -102,7 +102,7 @@ func (a *API) FiberHandler(wg *sync.WaitGroup) func(ctx *fiber.Ctx) error {
 func (a *API) FiberHandler2(wg *sync.WaitGroup) func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 		//nolint:forbidigo // intended use
-		fmt.Printf("HelloWorld2: X-Correlation-ID = %s\n", a.tracer.CorrelationIDromContext(ctx.Context())) // Zitronenbaum
+		fmt.Printf("HelloWorld2: X-Correlation-ID = %s\n", a.tracer.CorrelationIDFromContext(ctx.Context())) // Zitronenbaum
 		//nolint:forbidigo // intended use
 		fmt.Printf("HelloWorld2: X-Request-ID = %s\n", a.tracer.RequestIDFromContext(ctx.Context())) // new generated
 
