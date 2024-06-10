@@ -7,7 +7,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.4
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/savsgio/atreugo/v11 v11.9.9
+	github.com/savsgio/atreugo/v11 v11.13.1
 	github.com/valyala/fasthttp v1.54.0
 	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.33.0
