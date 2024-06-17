@@ -10,7 +10,7 @@ require (
 	github.com/savsgio/atreugo/v11 v11.9.9
 	github.com/valyala/fasthttp v1.54.0
 	google.golang.org/grpc v1.64.0
-	google.golang.org/protobuf v1.33.0
+	google.golang.org/protobuf v1.34.2
 )
 
 require (
