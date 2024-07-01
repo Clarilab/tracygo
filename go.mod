@@ -4,7 +4,7 @@ go 1.22.4
 
 require (
 	github.com/go-resty/resty/v2 v2.13.1
-	github.com/gofiber/fiber/v2 v2.52.4
+	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/savsgio/atreugo/v11 v11.9.9
