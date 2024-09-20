@@ -22,6 +22,9 @@ func CheckTracingIDs(tracer *tracygo.TracyGo) echo.MiddlewareFunc {
 				requestID = uuid.NewString()
 			}
 
+			c.Set(tracer.CorrelationIDKey(), correlationID)
+			c.Set(tracer.RequestIDKey(), requestID)
+
 			c.Response().Header().Set(tracer.CorrelationIDKey(), correlationID)
 			c.Response().Header().Set(tracer.RequestIDKey(), requestID)
 
