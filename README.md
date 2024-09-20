@@ -6,6 +6,7 @@ TracyGo provides functionality for tracing a correlation identifier through mult
 
 The library includes middlewares for the following frameworks:
 - [Atreugo](https://github.com/savsgio/atreugo)
+- [Echo](https://github.com/labstack/echo)
 - [Fiber](https://github.com/gofiber/fiber)
 - [Resty](https://github.com/go-resty/resty)
 - [net/http](https://pkg.go.dev/net/http)
