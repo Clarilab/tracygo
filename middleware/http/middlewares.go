@@ -13,8 +13,8 @@ import (
 func CheckTracingIDs(t *tracygo.TracyGo) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		fn := func(w http.ResponseWriter, r *http.Request) {
-			correlationID := r.Header.Get(t.CorrelationIDKey())
-			requestID := r.Header.Get(t.RequestIDKey())
+			correlationID := r.Header.Get(string(t.CorrelationIDKey()))
+			requestID := r.Header.Get(string(t.RequestIDKey()))
 
 			if correlationID == "" {
 				correlationID = uuid.NewString()
@@ -24,11 +24,11 @@ func CheckTracingIDs(t *tracygo.TracyGo) func(next http.Handler) http.Handler {
 				requestID = uuid.NewString()
 			}
 
-			ctx := context.WithValue(r.Context(), t.RequestIDKey(), requestID) //nolint:staticcheck // intended use
-			ctx = context.WithValue(ctx, t.CorrelationIDKey(), correlationID)  //nolint:staticcheck // intended use
+			ctx := context.WithValue(r.Context(), t.RequestIDKey(), requestID)
+			ctx = context.WithValue(ctx, t.CorrelationIDKey(), correlationID)
 
-			w.Header().Set(t.RequestIDKey(), requestID)
-			w.Header().Set(t.CorrelationIDKey(), correlationID)
+			w.Header().Set(string(t.RequestIDKey()), requestID)
+			w.Header().Set(string(t.CorrelationIDKey()), correlationID)
 
 			next.ServeHTTP(w, r.WithContext(ctx))
 		}

@@ -10,16 +10,16 @@ import (
 // If they are set, they should be put into the request headers.
 func CheckTracingIDs(t *tracygo.TracyGo) func(client *resty.Client, request *resty.Request) error {
 	return func(_ *resty.Client, request *resty.Request) error {
-		request.Header.Set(t.RequestIDKey(), uuid.NewString())
+		request.Header.Set(string(t.RequestIDKey()), uuid.NewString())
 
 		correlationID, ok := request.Context().Value(t.CorrelationIDKey()).(string)
 		if ok && correlationID != "" {
-			request.Header.Set(t.CorrelationIDKey(), correlationID)
+			request.Header.Set(string(t.CorrelationIDKey()), correlationID)
 
 			return nil
 		}
 
-		request.Header.Set(t.CorrelationIDKey(), uuid.NewString())
+		request.Header.Set(string(t.CorrelationIDKey()), uuid.NewString())
 
 		return nil
 	}

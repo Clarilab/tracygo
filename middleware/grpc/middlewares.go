@@ -22,24 +22,24 @@ func CheckTracingIDs(t *tracygo.TracyGo) func(ctx context.Context, req any, _ *g
 		var correlationID string
 		var requestID string
 
-		if values := md[strings.ToLower(t.CorrelationIDKey())]; len(values) == 1 {
+		if values := md[strings.ToLower(string(t.CorrelationIDKey()))]; len(values) == 1 {
 			correlationID = values[0]
 		}
 
-		if values := md[strings.ToLower(t.RequestIDKey())]; len(values) == 1 {
+		if values := md[strings.ToLower(string(t.RequestIDKey()))]; len(values) == 1 {
 			requestID = values[0]
 		}
 
 		if correlationID == "" {
 			correlationID = uuid.NewString()
 
-			md.Append(t.CorrelationIDKey(), correlationID)
+			md.Append(string(t.CorrelationIDKey()), correlationID)
 		}
 
 		if requestID == "" {
 			requestID = uuid.NewString()
 
-			md.Append(t.RequestIDKey(), requestID)
+			md.Append(string(t.RequestIDKey()), requestID)
 		}
 
 		if err := grpc.SetTrailer(ctx, md); err != nil {
@@ -48,12 +48,12 @@ func CheckTracingIDs(t *tracygo.TracyGo) func(ctx context.Context, req any, _ *g
 
 		ctx = metadata.AppendToOutgoingContext(
 			ctx,
-			t.CorrelationIDKey(), correlationID,
-			t.RequestIDKey(), requestID,
+			string(t.CorrelationIDKey()), correlationID,
+			string(t.RequestIDKey()), requestID,
 		)
 
-		ctx = context.WithValue(ctx, t.CorrelationIDKey(), correlationID) //nolint:staticcheck // intended use
-		ctx = context.WithValue(ctx, t.RequestIDKey(), requestID)         //nolint:staticcheck // intended use
+		ctx = context.WithValue(ctx, t.CorrelationIDKey(), correlationID)
+		ctx = context.WithValue(ctx, t.RequestIDKey(), requestID)
 
 		return handler(ctx, req)
 	}

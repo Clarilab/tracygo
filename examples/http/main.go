@@ -23,18 +23,18 @@ func main() {
 	// setup main server
 	setupMainServer(tracer)
 
-	resp, err := callMainServer(context.Background(), tracer.CorrelationIDKey())
+	resp, err := callMainServer(context.Background(), string(tracer.CorrelationIDKey()))
 	if err != nil {
 		panic(err)
 	}
 
 	defer resp.Body.Close()
 
-	if resp.Header.Get(tracer.CorrelationIDKey()) != correlationValue {
+	if resp.Header.Get(string(tracer.CorrelationIDKey())) != correlationValue {
 		panic("X-Correlation-ID header is not set in response")
 	}
 
-	if resp.Header.Get(tracer.RequestIDKey()) == "" {
+	if resp.Header.Get(string(tracer.RequestIDKey())) == "" {
 		panic("X-Request-ID header is not set in response")
 	}
 }
@@ -59,7 +59,7 @@ func setupMainServer(tracer *tracygo.TracyGo) {
 	restyClient.OnBeforeRequest(restytracygo.CheckTracingIDs(tracer))
 
 	mux.HandleFunc("/", func(_ http.ResponseWriter, r *http.Request) {
-		if r.Header.Get(tracer.CorrelationIDKey()) != correlationValue {
+		if r.Header.Get(string(tracer.CorrelationIDKey())) != correlationValue {
 			panic("X-Correlation-ID header is not set in context")
 		}
 

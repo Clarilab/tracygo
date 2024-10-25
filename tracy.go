@@ -8,22 +8,24 @@ import (
 	"github.com/google/uuid"
 )
 
+type ContextKey string
+
 const (
-	correlationID = "X-Correlation-ID"
-	requestID     = "X-Request-ID"
+	keyCorrelationID ContextKey = "X-Correlation-ID"
+	keyRequestID     ContextKey = "X-Request-ID"
 )
 
 // TracyGo is a struct for the tracy object.
 type TracyGo struct {
-	correlationID string
-	requestID     string
+	correlationID ContextKey
+	requestID     ContextKey
 }
 
 // New creates a new TracyGo object and uses the options on it.
 func New(options ...Option) *TracyGo {
 	tracy := &TracyGo{
-		correlationID: correlationID,
-		requestID:     requestID,
+		correlationID: keyCorrelationID,
+		requestID:     keyRequestID,
 	}
 
 	for _, option := range options {
@@ -34,12 +36,12 @@ func New(options ...Option) *TracyGo {
 }
 
 // CorrelationIDKey returns the underlying correlation id key.
-func (t *TracyGo) CorrelationIDKey() string {
+func (t *TracyGo) CorrelationIDKey() ContextKey {
 	return t.correlationID
 }
 
 // RequestIDKey returns the underlying request id key.
-func (t *TracyGo) RequestIDKey() string {
+func (t *TracyGo) RequestIDKey() ContextKey {
 	return t.requestID
 }
 

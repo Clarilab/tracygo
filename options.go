@@ -4,14 +4,14 @@ package tracygo
 type Option func(tracy *TracyGo)
 
 // WithCorrelationID returns a function that sets the key for the correlation id header.
-func WithCorrelationID(id string) Option {
+func WithCorrelationID(id ContextKey) Option {
 	return func(tracy *TracyGo) {
 		tracy.correlationID = id
 	}
 }
 
 // WithRequestID returns a function that sets the key for the request id header.
-func WithRequestID(id string) Option {
+func WithRequestID(id ContextKey) Option {
 	return func(tracy *TracyGo) {
 		tracy.requestID = id
 	}
