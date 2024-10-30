@@ -11,9 +11,9 @@ type (
 	contextUnmarshalFunc func(context.Context, map[string]any) context.Context
 )
 
-// RegisterEventHorizonContextKeys registers marshal and unmarshal functions for correlationIDs in contextes.
+// CheckTracingIDs registers marshal and unmarshal functions for correlationIDs in contextes.
 // The parameters marshalFunc and unmarshalFunc are to be filled with the RegisterMarshal/UnmarshalFunc function of your eventhorizon library.
-func RegisterEventHorizonContextKeys(tracer *tracygo.TracyGo, registerMarshal func(f contextMarshalFunc), registerUnmarshal func(f contextUnmarshalFunc) context.Context) {
+func CheckTracingIDs(tracer *tracygo.TracyGo, registerMarshal func(f contextMarshalFunc), registerUnmarshal func(f contextUnmarshalFunc) context.Context) {
 	registerMarshal(func(ctx context.Context, vals map[string]any) {
 		if correlationID, ok := ctx.Value(tracer.CorrelationIDKey()).(string); ok {
 			vals[tracer.CorrelationIDKey()] = correlationID
