@@ -10,6 +10,7 @@ The library includes middlewares for the following frameworks:
 - [Fiber](https://github.com/gofiber/fiber)
 - [Resty](https://github.com/go-resty/resty)
 - [net/http](https://pkg.go.dev/net/http)
+- [EventHorizon](https://github.com/looplab/eventhorizon)
 
 ### Supported Go Versions
 
