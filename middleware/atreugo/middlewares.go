@@ -1,6 +1,8 @@
 package atreugo
 
 import (
+	"context"
+
 	"github.com/Clarilab/tracygo/v2"
 	"github.com/google/uuid"
 	"github.com/savsgio/atreugo/v11"
@@ -24,6 +26,17 @@ func CheckTracingIDs(t *tracygo.TracyGo) func(ctx *atreugo.RequestCtx) error {
 		// set userValues for resty middleware
 		ctx.SetUserValue(t.CorrelationIDKey(), correlationID)
 		ctx.SetUserValue(t.RequestIDKey(), requestID)
+
+		// also set to attachedContext
+		aCtx := ctx.AttachedContext()
+		if aCtx == nil {
+			aCtx = context.Background()
+		}
+
+		aCtx = context.WithValue(aCtx, t.CorrelationIDKey(), correlationID)
+		aCtx = context.WithValue(aCtx, t.RequestIDKey(), requestID)
+
+		ctx.AttachContext(aCtx)
 
 		ctx.Response.Header.Set(t.CorrelationIDKey(), correlationID)
 		ctx.Response.Header.Set(t.RequestIDKey(), requestID)
