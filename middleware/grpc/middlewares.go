@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// CheckTracingIDs is a middleware for grpc that checks if a correlationID and requestID have been set
+// CheckTracingIDs is a middleware for grpc servers that checks if a correlationID and requestID have been set
 // and creates a new one if they have not been set yet.
 func CheckTracingIDs(t *tracygo.TracyGo) func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 	return func(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
@@ -56,5 +56,16 @@ func CheckTracingIDs(t *tracygo.TracyGo) func(ctx context.Context, req any, _ *g
 		ctx = context.WithValue(ctx, t.RequestIDKey(), requestID)         //nolint:staticcheck // intended use
 
 		return handler(ctx, req)
+	}
+}
+
+// ClientMiddleware is a middleware for grpc clients. It ensures that a correlationID is set.
+func ClientMiddleware(t *tracygo.TracyGo) grpc.UnaryClientInterceptor {
+	return func(ctx context.Context, method string, req, reply any, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+		ctx = t.EnsureCorrelationID(ctx)
+		cID := t.CorrelationIDFromContext(ctx)
+		ctx = metadata.AppendToOutgoingContext(ctx, t.CorrelationIDKey(), cID)
+
+		return invoker(ctx, method, req, reply, cc, opts...)
 	}
 }
