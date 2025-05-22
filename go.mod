@@ -6,7 +6,7 @@ toolchain go1.23.4
 
 require (
 	github.com/go-resty/resty/v2 v2.16.5
-	github.com/gofiber/fiber/v2 v2.52.6
+	github.com/gofiber/fiber/v2 v2.52.7
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/savsgio/atreugo/v11 v11.9.9
