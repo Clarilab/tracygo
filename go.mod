@@ -1,6 +1,6 @@
 module github.com/Clarilab/tracygo/v2
 
-go 1.22.7
+go 1.23
 
 toolchain go1.23.4
 
@@ -12,7 +12,7 @@ require (
 	github.com/savsgio/atreugo/v11 v11.9.9
 	github.com/valyala/fasthttp v1.58.0
 	google.golang.org/grpc v1.70.0
-	google.golang.org/protobuf v1.36.5
+	google.golang.org/protobuf v1.36.8
 )
 
 require (
