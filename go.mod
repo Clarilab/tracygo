@@ -14,7 +14,7 @@ require (
 )
 
 require (
-	github.com/labstack/gommon v0.4.2 // indirect
+	github.com/labstack/gommon v0.5.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	golang.org/x/crypto v0.51.0 // indirect
 )
@@ -23,9 +23,9 @@ require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/fasthttp/router v1.5.1 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
-	github.com/labstack/echo/v4 v4.13.3
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/labstack/echo/v4 v4.15.3
+	github.com/mattn/go-colorable v0.1.14 // indirect
+	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/savsgio/gotils v0.0.0-20240303185622-093b76447511 // indirect
