@@ -16,7 +16,7 @@ require (
 require (
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	golang.org/x/crypto v0.51.0 // indirect
+	golang.org/x/crypto v0.52.0 // indirect
 )
 
 require (
