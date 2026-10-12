@@ -1,6 +1,6 @@
 module github.com/Clarilab/tracygo/v2
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/go-resty/resty/v2 v2.17.2
@@ -8,7 +8,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/savsgio/atreugo/v11 v11.9.9
-	github.com/valyala/fasthttp v1.74.0
+	github.com/valyala/fasthttp v1.75.0
 	google.golang.org/grpc v1.84.0
 	google.golang.org/protobuf v1.36.12
 )
@@ -16,22 +16,22 @@ require (
 require (
 	github.com/clipperhouse/uax29/v2 v2.2.0 // indirect
 	github.com/labstack/gommon v0.5.0 // indirect
-	github.com/molecule-man/go-brrr v1.0.1 // indirect
+	github.com/molecule-man/go-brrr v1.1.1 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	golang.org/x/crypto v0.55.0 // indirect
+	golang.org/x/crypto v0.57.0 // indirect
 )
 
 require (
 	github.com/fasthttp/router v1.5.4 // indirect
-	github.com/klauspost/compress v1.20.0 // indirect
+	github.com/klauspost/compress v1.20.1 // indirect
 	github.com/labstack/echo/v4 v4.16.0
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mattn/go-runewidth v0.0.28 // indirect
 	github.com/savsgio/gotils v0.0.0-20250924091648-bce9a52d7761 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	golang.org/x/net v0.58.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
+	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260825221802-da73d73af1c5 // indirect
 )
